@@ -1,0 +1,5 @@
+.venv/
+.vscode/
+*.joblib
+.DS_Store
+/Data/LocalPeople/
