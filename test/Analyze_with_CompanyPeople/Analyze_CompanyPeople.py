@@ -74,8 +74,8 @@ def load_companypeople_quarterly_fixed(year, quarter, people_dir):
             col for col in numeric_cols if col in df_filtered.columns
         ]
         result_df = df_filtered[keep_cols].copy()
-        
-         # 직장인구 데이터도 누적합으로 변경
+
+        # 직장인구 데이터도 누적합으로 변경
         result_df = result_df.groupby("행정동코드")[numeric_cols].sum().reset_index()
 
         print(

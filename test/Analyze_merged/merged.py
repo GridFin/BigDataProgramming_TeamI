@@ -288,6 +288,7 @@ X_train, X_test, y_train, y_test, quarter_test = preprocess_master(master_df)
 from sklearn.ensemble import RandomForestRegressor
 from sklearn.metrics import mean_squared_error, mean_absolute_error
 import numpy as np
+from datetime import datetime
 
 # 로그 변환하여 학습
 y_train_log = np.log1p(y_train.clip(lower=0))
@@ -315,6 +316,151 @@ print(f"MSE:  {mse:,.0f}")
 print(f"RMSE: {rmse:,.0f} 원")
 print(f"MAE:  {mae:,.0f} 원")
 print(f"OOB Score: {model.oob_score_:.4f}")
+
+
+def save_merged_model_and_metrics(model, metrics, X_train, y_test):
+    """일반 병합 모델과 평가지표 저장"""
+
+    # 결과 저장 디렉토리 생성 (현재 스크립트 디렉토리 기준)
+    script_dir = os.path.dirname(os.path.abspath(__file__))
+    results_dir = os.path.join(script_dir, "results")
+    if not os.path.exists(results_dir):
+        os.makedirs(results_dir)
+        print(f"📁 결과 디렉토리 생성: {results_dir}")
+
+    timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
+
+    # 1. 모델 저장
+    model_filename = os.path.join(results_dir, f"merged_model_{timestamp}.joblib")
+    joblib.dump(model, model_filename)
+    print(f"💾 모델 저장 완료: {model_filename}")
+
+    # 2. 특성 중요도 계산
+    feature_importance = pd.DataFrame(
+        {"feature": X_train.columns, "importance": model.feature_importances_}
+    ).sort_values("importance", ascending=False)
+
+    # 3. 평가지표 CSV 저장
+    metrics_data = {
+        "실행시간": [timestamp],
+        "MSE": [metrics["mse"]],
+        "RMSE": [metrics["rmse"]],
+        "MAE": [metrics["mae"]],
+        "OOB_Score": [model.oob_score_],
+        "테스트_년도": [2024],
+        "훈련_데이터_크기": [len(X_train)],
+        "테스트_데이터_크기": [len(y_test)],
+        "특성_개수": [len(X_train.columns)],
+        "모델_타입": ["RandomForest_병합데이터"],
+        "타깃_리키지_제거": ["Yes"],
+        "시계열_특성": ["No"],
+    }
+
+    metrics_df = pd.DataFrame(metrics_data)
+    metrics_filename = os.path.join(results_dir, f"merged_metrics_{timestamp}.csv")
+    metrics_df.to_csv(metrics_filename, index=False, encoding="utf-8-sig")
+    print(f"📊 평가지표 CSV 저장 완료: {metrics_filename}")
+
+    # 4. 특성 중요도 저장
+    importance_filename = os.path.join(
+        results_dir, f"merged_importance_{timestamp}.csv"
+    )
+    feature_importance.to_csv(importance_filename, index=False, encoding="utf-8-sig")
+    print(f"🔍 특성 중요도 CSV 저장 완료: {importance_filename}")
+
+    # 5. 실행 정보 요약 저장
+    summary_data = {
+        "항목": [
+            "실행시간",
+            "MSE",
+            "RMSE (원)",
+            "MAE (원)",
+            "OOB Score",
+            "테스트 년도",
+            "훈련 데이터 크기",
+            "테스트 데이터 크기",
+            "특성 개수",
+            "모델 타입",
+            "타깃 리키지 제거",
+            "시계열 특성",
+            "데이터 구성",
+        ],
+        "값": [
+            timestamp,
+            f"{metrics['mse']:,.0f}",
+            f"{metrics['rmse']:,.0f}",
+            f"{metrics['mae']:,.0f}",
+            f"{model.oob_score_:.4f}",
+            "2024",
+            f"{len(X_train):,}",
+            f"{len(y_test):,}",
+            len(X_train.columns),
+            "RandomForest 병합데이터",
+            "Yes",
+            "No",
+            "매출+실거주+직장인",
+        ],
+    }
+
+    summary_df = pd.DataFrame(summary_data)
+    summary_filename = os.path.join(results_dir, f"merged_summary_{timestamp}.csv")
+    summary_df.to_csv(summary_filename, index=False, encoding="utf-8-sig")
+    print(f"📋 모델 요약 CSV 저장 완료: {summary_filename}")
+
+    # 6. 상위 20개 특성 중요도 출력
+    print(f"\n--- 상위 20개 특성 중요도 ---")
+    for i, (_, row) in enumerate(feature_importance.head(20).iterrows(), 1):
+        # 특성 타입 분류
+        feature_name = row["feature"]
+        if "생활인구수" in feature_name:
+            marker = "👥"
+        elif "직장" in feature_name:
+            marker = "🏢"
+        elif "업종" in feature_name or "encoded" in feature_name:
+            marker = "🏪"
+        elif "년분기" in feature_name or "연도" in feature_name:
+            marker = "📅"
+        else:
+            marker = "📊"
+
+        print(f"{i:2d}. {marker} {feature_name[:50]}: {row['importance']:.4f}")
+
+    # 7. 특성 타입별 기여도 분석
+    population_features = feature_importance[
+        feature_importance["feature"].str.contains("생활인구수", regex=True)
+    ]
+    company_features = feature_importance[
+        feature_importance["feature"].str.contains("직장", regex=True)
+    ]
+
+    pop_importance = population_features["importance"].sum()
+    company_importance = company_features["importance"].sum()
+
+    print(f"\n📊 특성 타입별 기여도 분석")
+    print(
+        f"👥 실거주 인구 특성 기여도: {pop_importance:.4f} ({pop_importance*100:.1f}%)"
+    )
+    print(
+        f"🏢 직장인 특성 기여도: {company_importance:.4f} ({company_importance*100:.1f}%)"
+    )
+
+    print(f"\n🎉 모든 결과가 '{results_dir}' 폴더에 저장되었습니다!")
+    return {
+        "model_file": model_filename,
+        "metrics_file": metrics_filename,
+        "importance_file": importance_filename,
+        "summary_file": summary_filename,
+    }
+
+
+# 메타데이터 저장 실행
+print("\n" + "=" * 60)
+print("💾 병합 모델 결과 저장 중...")
+print("=" * 60)
+
+save_result = save_merged_model_and_metrics(
+    model, {"mse": mse, "rmse": rmse, "mae": mae}, X_train, y_test
+)
 
 
 # In[8]:
