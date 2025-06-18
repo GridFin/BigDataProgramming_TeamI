@@ -1,0 +1,22 @@
+# 데이터 처리 및 분석
+pandas>=1.5.0
+numpy>=1.21.0
+
+# 머신러닝
+scikit-learn>=1.1.0
+joblib>=1.2.0
+
+# 추가적으로 프로젝트에서 사용될 수 있는 라이브러리들
+# 시각화 (분석 시 필요할 수 있음)
+matplotlib>=3.5.0
+seaborn>=0.11.0
+
+# Jupyter 노트북 (프로젝트에 .ipynb 파일들이 있음)
+jupyter>=1.0.0
+notebook>=6.4.0
+
+# CatBoost (catboost_info 폴더가 있어서 사용될 가능성 있음)
+catboost>=1.1.0
+
+# 데이터 시각화 및 분석 도구
+plotly>=5.0.0 
