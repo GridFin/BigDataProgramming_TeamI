@@ -573,7 +573,12 @@ df_2019_2024.head()
 
 # 연도 순으로 정렬 후 저장
 df_2019_2024_sorted = df_2019_2024.sort_values(by=["연도", "행정동코드", "순위"])
-df_2019_2024_sorted.to_csv("analysis_2019_2024.csv", index=False, encoding="utf-8-sig")
+
+# 현재 스크립트 디렉토리에 저장
+script_dir = os.path.dirname(os.path.abspath(__file__))
+analysis_file_path = os.path.join(script_dir, "analysis_2019_2024.csv")
+df_2019_2024_sorted.to_csv(analysis_file_path, index=False, encoding="utf-8-sig")
+print(f"📊 2019-2024 분석 결과 저장 완료: {analysis_file_path}")
 
 
 # In[12]:
@@ -644,7 +649,12 @@ df_2025_result = df_2025_result[
 
 # 10. 저장
 df_2025_sorted = df_2025_result.sort_values(by=["행정동코드", "순위"])
-df_2025_sorted.to_csv("prediction_2025.csv", index=False, encoding="utf-8-sig")
+
+# 현재 스크립트 디렉토리에 저장
+script_dir = os.path.dirname(os.path.abspath(__file__))
+prediction_file_path = os.path.join(script_dir, "prediction_2025.csv")
+df_2025_sorted.to_csv(prediction_file_path, index=False, encoding="utf-8-sig")
+print(f"🔮 2025년 예측 결과 저장 완료: {prediction_file_path}")
 
 
 # 확인
