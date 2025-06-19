@@ -32,22 +32,14 @@ pip install -r requirements.txt
 Data/
 ├── CompanyPeople/              # 직장인구 데이터
 │   └── CompanyPeople.csv       # 행정동별 직장인구 통계 (성별, 연령대별)
-├── LocalPeople/               # 실거주인구 데이터 (자동 다운로드)
+│
+├── LocalPeople/               # 실거주인구 데이터 (코드 실행 시 자동 다운로드)
 │   ├── LOCAL_PEOPLE_DONG_201901.csv
 │   ├── LOCAL_PEOPLE_DONG_201902.csv
-│   └── ...                    # 월별 실거주인구 데이터
-├── ~~Rain/~~                   # ~~강수량 데이터 (2019-2024)~~ [사용안함]
-│   ├── ~~rain_2019.csv~~
-│   ├── ~~rain_2020.csv~~
-│   └── ~~...~~
-├── ~~Temp/~~                   # ~~기온 데이터 (2019-2024)~~ [사용안함]
-│   ├── ~~Temp_2019.csv~~
-│   ├── ~~Temp_2020.csv~~
-│   └── ~~...~~
+│
 └── Trading_Area/              # 상권 매출 데이터 (2019-2024)
     ├── Trading_Area_2019.csv
     ├── Trading_Area_2020.csv
-    └── ...                    # 연도별 분기별 상권 매출 데이터
 ```
 
 ### 🔬 분석 코드 디렉토리 (`Code/`)
