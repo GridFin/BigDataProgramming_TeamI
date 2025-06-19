@@ -46,13 +46,16 @@ Code/
 ├── Analyze_with_LocalPeople/          # 1️⃣ 실거주인구 기반 분석
 │   ├── Analyze_LocalPeople.ipynb     # 실거주인구 데이터 활용 매출 예측
 │   └── results/                      # 모델 결과 및 성능 지표
+│
 ├── Analyze_with_CompanyPeople/        # 2️⃣ 직장인구 기반 분석  
 │   ├── Analyze_CompanyPeople.ipynb   # 직장인구 데이터 활용 매출 예측
 │   └── results/                      # 모델 결과 및 성능 지표
+│
 ├── Analyze_merged/                    # 3️⃣ 통합 데이터 분석
 │   ├── merged.ipynb                  # 모든 데이터 통합 매출 예측
 │   ├── analysis_2019_2024.csv       # 2019-2024 분석 결과
 │   └── prediction_2025.csv          # 2025년 예측 결과
+│
 └── Analyze_merged_TimeSeries/         # 4️⃣ 시계열 특성 포함 분석
     ├── merged_timeseries.ipynb       # 시계열 lag 특성 포함 예측 모델
     ├── timeseries_analysis_2019_2024.csv
