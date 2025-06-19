@@ -33,11 +33,11 @@ Data/
 │
 ├── LocalPeople/               # 실거주인구 데이터 (코드 실행 시 자동 다운로드)
 │   ├── LOCAL_PEOPLE_DONG_201901.csv
-│   ├── LOCAL_PEOPLE_DONG_201902.csv
+│   └── LOCAL_PEOPLE_DONG_201902.csv
 │
 └── Trading_Area/              # 상권 매출 데이터 (2019-2024)
     ├── Trading_Area_2019.csv
-    ├── Trading_Area_2020.csv
+    └── Trading_Area_2020.csv
 ```
 
 ### 🔬 분석 코드 디렉토리 (`Code/`)
